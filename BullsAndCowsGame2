@@ -1,0 +1,83 @@
+class BullsAndCowsGame
+{
+    private int[] secretNumber;
+    private int attempts;
+
+    public BullsAndCowsGame()
+    {
+        secretNumber = GenerateSecretNumber();
+        attempts = 5;
+    }
+
+    private int[] GenerateSecretNumber()
+    {
+        Random random = new Random();
+        int[] number = new int[4];
+        for (int i = 0; i < number.Length; i++)
+        {
+            number[i] = random.Next(0, 10);
+        }
+        return number;
+    }
+
+    public void PlayGame()
+    {
+        while (attempts > 0)
+        {
+            int[] guess = GetGuess();
+            int bulls = 0;
+            int cows = 0;
+            for (int i = 0; i < guess.Length; i++)
+            {
+                if (guess[i] == secretNumber[i])
+                {
+                    bulls++;
+                }
+                else if (secretNumber.Contains(guess[i]))
+                {
+                    cows++;
+                }
+            }
+            Console.WriteLine($"Попытка #{6 - attempts}: Быки: {bulls}, Коровы: {cows}");
+            if (bulls == 4)
+            {
+                Console.WriteLine("Поздравляю! Вы угадали секретное число!");
+                break;
+            }
+            attempts--;
+        }
+
+        if (attempts == 0)
+        {
+            Console.WriteLine("Вы проиграли. Секретное число было:");
+            foreach (int digit in secretNumber)
+            {
+                Console.Write(digit);
+            }
+            Console.WriteLine();
+        }
+    }
+
+    private int[] GetGuess()
+    {
+        Console.WriteLine("Введите ваше предположение (четырехзначное число без повторяющихся цифр):");
+        string input = Console.ReadLine();
+        while (input.Length != 4 || input.Distinct().Count() < 4 || !input.All(char.IsDigit))
+        {
+            Console.WriteLine("Некорректный ввод. Пожалуйста, введите четырехзначное число без повторяющихся цифр:");
+            input = Console.ReadLine();
+        }
+        return input.Select(c => int.Parse(c.ToString())).ToArray();
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        Console.WriteLine("Добро пожаловать в игру 'Быки и Коровы'!nПопробуйте угадать четырехзначное число.");
+        BullsAndCowsGame game = new BullsAndCowsGame();
+        game.PlayGame();
+        Console.WriteLine("Игра окончена. Спасибо за игру!");
+    }
+}
